@@ -3,6 +3,8 @@
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
+#define BOOST_UNORDERED_DEPRECATED_EQUALITY
+
 #include "../helpers/prefix.hpp"
 
 #include <boost/unordered_set.hpp>
@@ -80,25 +82,25 @@ namespace equality_tests
         BOOST_TEST(!(x1 == x2));
         BOOST_TEST(x2 != x1);
         BOOST_TEST(!(x2 == x1));
-        
+
         x2.insert(1);
         BOOST_TEST(x1 == x2);
         BOOST_TEST(!(x1 != x2));
-        
+
         x2.insert(2);
         BOOST_TEST(x1 != x2);
         BOOST_TEST(!(x1 == x2));
         BOOST_TEST(x2 != x1);
         BOOST_TEST(!(x2 == x1));
     }
-    
+
     UNORDERED_AUTO_TEST(equality_key_value_tests)
     {
         UNORDERED_EQUALITY_MULTISET_TEST((1), !=, (2))
         UNORDERED_EQUALITY_SET_TEST((2), ==, (2))
         UNORDERED_EQUALITY_MAP_TEST(((1)(1))((2)(1)), !=, ((1)(1))((3)(1)))
     }
-    
+
     UNORDERED_AUTO_TEST(equality_collision_test)
     {
         UNORDERED_EQUALITY_MULTISET_TEST(
@@ -124,7 +126,7 @@ namespace equality_tests
             ((20)(1))((10)(1))((10)(1)), ==,
             ((10)(1))((20)(1))((10)(1)))
     }
-    
+
     UNORDERED_AUTO_TEST(equality_map_value_test)
     {
         UNORDERED_EQUALITY_MAP_TEST(
@@ -136,17 +138,15 @@ namespace equality_tests
         UNORDERED_EQUALITY_MULTIMAP_TEST(
             ((1)(1))((1)(1)), !=, ((1)(1))((1)(2)))
         UNORDERED_EQUALITY_MULTIMAP_TEST(
-            ((1)(2))((1)(1)), ==, ((1)(1))((1)(2)))
-        UNORDERED_EQUALITY_MULTIMAP_TEST(
-            ((1)(2))((1)(1)), !=, ((1)(1))((1)(3)))
+            ((1)(2))((1)(1)), !=, ((1)(1))((1)(2)))
     }
 
     UNORDERED_AUTO_TEST(equality_predicate_test)
     {
         UNORDERED_EQUALITY_SET_TEST(
-            (1), !=, (1001))
+            (1), ==, (1001))
         UNORDERED_EQUALITY_MAP_TEST(
-            ((1)(2))((1001)(1)), !=, ((1001)(2))((1)(1)))
+            ((1)(2))((1001)(1)), ==, ((1001)(2))((1)(1)))
     }
 
     // Test that equality still works when the two containers have
