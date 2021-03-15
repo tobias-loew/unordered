@@ -1056,11 +1056,11 @@ namespace boost {
                                                                                \
       template <typename X> static choice2::type test(choice2);                \
                                                                                \
-      template<bool used>                                                      \
+      template<bool default_used>                                              \
       struct DefaultWrap                                                       \
       {                                                                        \
         typedef typename QuotedDefault::BOOST_NESTED_TEMPLATE                  \
-          quoted<used>::type tname;                                            \
+          quoted<default_used>::type tname;                                    \
       };                                                                       \
                                                                                \
       enum                                                                     \
