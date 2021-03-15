@@ -1046,7 +1046,8 @@ namespace boost {
 #define BOOST_UNORDERED_DEFAULT_QUOTED_TYPE_TMPLT(tname)                       \
   template <typename Tp, typename QuotedDefault> struct default_type_##tname   \
   {                                                                            \
-    template <bool used = true>                                                \
+    template <bool used = true,                                                \
+      typename prevent_explicit_specialization = void>                         \
     struct quoted                                                              \
     {                                                                          \
                                                                                \
@@ -1072,8 +1073,8 @@ namespace boost {
         then<Tp, DefaultWrap<!value>>::type::tname type;                       \
     };                                                                         \
                                                                                \
-    template <>                                                                \
-    struct quoted<false>                                                       \
+    template <typename prevent_explicit_specialization>                        \
+    struct quoted<false, prevent_explicit_specialization>                      \
     {                                                                          \
       typedef void type;                                                       \
     };                                                                         \
