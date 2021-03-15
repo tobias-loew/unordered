@@ -1086,7 +1086,6 @@ namespace boost {
 
 #define BOOST_UNORDERED_DEFAULT_TYPE(T, tname, arg)                            \
   typename default_type_##tname<T, arg>::type
-
 ////////////////////////////////////////////////////////////////////////////////
 //
 // Allocator traits
