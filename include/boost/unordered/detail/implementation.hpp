@@ -1501,7 +1501,7 @@ namespace boost {
   namespace unordered {
     namespace detail {
 
-#ifdef BOOST_UNORDERED_DEFAULT_QUOTED_TYPE_TMPLT
+#ifdef BOOST_UNORDERED_DEFAULT_QUOTED_TYPE_TMPLT_
       BOOST_UNORDERED_DEFAULT_QUOTED_TYPE_TMPLT(is_always_equal);
 #else
       BOOST_UNORDERED_DEFAULT_TYPE_TMPLT(is_always_equal);
@@ -1515,7 +1515,7 @@ namespace boost {
         // ourselves when not. Would be simpler not to bother with
         // std::allocator_traits, but I feel like I should try to use
         // it where possible.
-#ifdef BOOST_UNORDERED_DEFAULT_QUOTED_TYPE_TMPLT
+#ifdef BOOST_UNORDERED_DEFAULT_QUOTED_TYPE_TMPLT_
         typedef typename 
             BOOST_UNORDERED_DEFAULT_QUOTED_TYPE(std::allocator_traits<Alloc>,
                 is_always_equal,
