@@ -1059,7 +1059,8 @@ namespace boost {
       template<bool used>                                                      \
       struct DefaultWrap                                                       \
       {                                                                        \
-        typedef typename QuotedDefault::BOOST_NESTED_TEMPLATE quoted<used>::type tname;              \
+        typedef typename QuotedDefault::BOOST_NESTED_TEMPLATE                  \
+          quoted<used>::type tname;                                            \
       };                                                                       \
                                                                                \
       enum                                                                     \
@@ -1078,9 +1079,8 @@ namespace boost {
     };                                                                         \
   }
 
-#define BOOST_UNORDERED_DEFAULT_QUOTED_TYPE(T, tname, arg)                                 \
+#define BOOST_UNORDERED_DEFAULT_QUOTED_TYPE(T, tname, arg)                     \
   default_type_##tname<T, arg>
-
 
 #endif
 
