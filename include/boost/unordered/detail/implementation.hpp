@@ -553,6 +553,18 @@ namespace boost {
       {
         template <typename T> convert_from_anything(T const&);
       };
+
+
+      template <typename T>
+      struct quote
+      {
+        template <bool used = true>
+        struct quoted
+        {
+          typedef T type;
+        };
+      };
+
     }
   }
 }
@@ -1031,6 +1043,46 @@ namespace boost {
       then<Tp, DefaultWrap>::type::tname type;                                 \
   }
 
+#define BOOST_UNORDERED_DEFAULT_QUOTED_TYPE_TMPLT(tname)                       \
+  template <typename Tp, typename QuotedDefault> struct default_type_##tname   \
+  {                                                                            \
+    template <bool used = true,                                                \
+      typename prevent_explicit_specialization = void>                         \
+    struct quoted                                                              \
+    {                                                                          \
+                                                                               \
+      template <typename X>                                                    \
+      static typename boost::unordered::detail::sfinae<typename X::tname,      \
+        choice1>::type test(choice1);                                          \
+                                                                               \
+      template <typename X> static choice2::type test(choice2);                \
+                                                                               \
+      template<bool default_used>                                              \
+      struct DefaultWrap                                                       \
+      {                                                                        \
+        typedef typename QuotedDefault::BOOST_NESTED_TEMPLATE                  \
+          quoted<default_used>::type tname;                                    \
+      };                                                                       \
+                                                                               \
+      enum                                                                     \
+      {                                                                        \
+        value = (1 == sizeof(test<Tp>(choose())))                              \
+      };                                                                       \
+                                                                               \
+      typedef typename boost::detail::if_true<value>::BOOST_NESTED_TEMPLATE    \
+        then<Tp, DefaultWrap<!value>>::type::tname type;                       \
+    };                                                                         \
+                                                                               \
+    template <typename prevent_explicit_specialization>                        \
+    struct quoted<false, prevent_explicit_specialization>                      \
+    {                                                                          \
+      typedef void type;                                                       \
+    };                                                                         \
+  }
+
+#define BOOST_UNORDERED_DEFAULT_QUOTED_TYPE(T, tname, arg)                     \
+  default_type_##tname<T, arg>
+
 #endif
 
 #define BOOST_UNORDERED_DEFAULT_TYPE(T, tname, arg)                            \
@@ -1449,7 +1501,11 @@ namespace boost {
   namespace unordered {
     namespace detail {
 
+#ifdef BOOST_UNORDERED_DEFAULT_QUOTED_TYPE_TMPLT
+      BOOST_UNORDERED_DEFAULT_QUOTED_TYPE_TMPLT(is_always_equal);
+#else
       BOOST_UNORDERED_DEFAULT_TYPE_TMPLT(is_always_equal);
+#endif
 
       template <typename Alloc>
       struct allocator_traits : std::allocator_traits<Alloc>
@@ -1459,10 +1515,22 @@ namespace boost {
         // ourselves when not. Would be simpler not to bother with
         // std::allocator_traits, but I feel like I should try to use
         // it where possible.
+#ifdef BOOST_UNORDERED_DEFAULT_QUOTED_TYPE_TMPLT
+        typedef typename 
+            BOOST_UNORDERED_DEFAULT_QUOTED_TYPE(std::allocator_traits<Alloc>,
+                is_always_equal,
+                BOOST_UNORDERED_DEFAULT_QUOTED_TYPE(Alloc, 
+                    is_always_equal,
+                    quote<typename boost::is_empty<Alloc>::type>
+                )
+            )
+            ::BOOST_NESTED_TEMPLATE quoted<>::type is_always_equal;
+#else
         typedef BOOST_UNORDERED_DEFAULT_TYPE(std::allocator_traits<Alloc>,
           is_always_equal,
           BOOST_UNORDERED_DEFAULT_TYPE(Alloc, is_always_equal,
             typename boost::is_empty<Alloc>::type)) is_always_equal;
+#endif
       };
 
       template <typename Alloc, typename T> struct rebind_wrap
